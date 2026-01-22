@@ -122,22 +122,30 @@ export const Reports = () => {
         }
         
         // Call backend financial report endpoint
+        const params = new URLSearchParams();
+
+        params.append("month", String(monthIndex));
+        params.append("year", String(selectedYear));
+
+        if (selectedCategory !== "all") {
+          params.append("category", selectedCategory);
+        }
+
+        if (selectedType !== "all") {
+          params.append("transaction_type", selectedType);
+        }
+
         const response = await fetch(
-          `${API_BASE_URL}/api/analytics/financial-report/`,
+          `${API_BASE_URL}/api/analytics/financial-report/?${params.toString()}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              month: monthIndex,
-              year: selectedYear,
-              category: selectedCategory !== 'all' ? selectedCategory : null,
-              transaction_type: selectedType !== 'all' ? selectedType : null,
-            }),
           }
-        )
+        );
+
 
         
         if (!response.ok) {
