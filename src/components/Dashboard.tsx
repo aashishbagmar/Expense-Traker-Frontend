@@ -105,9 +105,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       const allTimeTotals = await transactionAPI.getAllTimeTotals();
       
       if (allTimeTotals) {
-        setTotalIncome(allTimeTotals.income || 0);
-        setTotalExpense(allTimeTotals.expense || 0);
-        setTotalBalance(allTimeTotals.net_balance || 0);
+        const income = allTimeTotals.income || 0;
+        const expense = allTimeTotals.expense || 0;
+        setTotalIncome(income);
+        setTotalExpense(expense);
+        // Always compute balance as income + expense (expense is negative)
+        setTotalBalance(income + expense);
         console.log('✅ All-time totals loaded:', allTimeTotals);
       } else {
         console.error('❌ Failed to load all-time totals');
@@ -181,7 +184,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             <h3> Total Balance</h3>
             <span className="card-icon"></span>
           </div>
-          <p className="card-value">₹{totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+          <p className="card-value">
+            {totalBalance < 0 ? '-₹' + Math.abs(totalBalance).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '₹' + totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </p>
           <p className="card-trend">Net balance</p>
         </div>
 
