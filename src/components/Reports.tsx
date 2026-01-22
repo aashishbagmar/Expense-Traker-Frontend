@@ -122,7 +122,6 @@ export const Reports = () => {
         }
         
         // Call backend financial report endpoint
-        const params = new URLSearchParams();
 
         params.append("month", String(monthIndex));
         params.append("year", String(selectedYear));
