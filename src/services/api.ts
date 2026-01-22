@@ -527,8 +527,8 @@ export const aiAPI = {
       const data = await response.json();
       return {
         success: true,
-        predicted_category: data.predicted_category,
-        confidence: data.confidence
+        predicted_category: data.prediction.category,
+        confidence: data.prediction.confidence
       };
     } catch (error) {
       console.error('Error predicting category:', error);
