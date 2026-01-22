@@ -57,49 +57,57 @@ export const Reports = () => {
     try {
       const monthIndex = months.indexOf(selectedMonth) + 1
       const token = localStorage.getItem('authToken')
-      
+
       if (!token) {
         alert('Please log in to export PDF')
         return
       }
 
+      // Build query params
+      const params = new URLSearchParams()
+      params.append('month', String(monthIndex))
+      params.append('year', String(selectedYear))
+
+      if (selectedCategory !== 'all') {
+        params.append('category', selectedCategory)
+      }
+
+      if (selectedType !== 'all') {
+        params.append('transaction_type', selectedType)
+      }
+
       const response = await fetch(
-        `expense-report-traker.onrender.com/api/analytics/export-pdf/`,
+        `https://expense-report-traker.onrender.com/api/analytics/export-pdf/?${params.toString()}`,
         {
-          method: 'POST',
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            month: monthIndex,
-            year: selectedYear,
-            category: selectedCategory !== 'all' ? selectedCategory : null,
-            transaction_type: selectedType !== 'all' ? selectedType : null,
-          }),
         }
       )
 
-      
       if (!response.ok) {
         throw new Error('Failed to generate PDF')
       }
-      
+
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
+
       const link = document.createElement('a')
       link.href = url
       link.download = `Financial_Report_${selectedMonth}_${selectedYear}.pdf`
-      
+
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+
       window.URL.revokeObjectURL(url)
     } catch (error) {
       console.error('Error exporting PDF:', error)
       alert('Failed to export PDF. Please try again.')
     }
   }
+
 
   // Load report data from backend when filters change
   useEffect(() => {
