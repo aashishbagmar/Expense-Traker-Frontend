@@ -313,37 +313,37 @@ export const Transactions: React.FC<TransactionsProps> = ({ onAddTransaction, vo
     if (!description.trim()) return;
     
     setPredictingCategory(true);
-    try {
-      const result = await aiAPI.predictCategory(description);
-      
-      if (result.success) {
-        // Automatically set type based on category
-        const isIncome = result.predicted_category.toLowerCase() === 'income';
+      try {
+        const result = await aiAPI.predictCategory(description);
         
-        setFormData(prev => ({
-          ...prev,
-          category: result.predicted_category,
-          type: isIncome ? 'income' : 'expense'
-        }));
-        setPredictionConfidence(result.confidence);
-        
-        // Store AI prediction for correction tracking
-        setAiPrediction({
-          category: result.predicted_category,
-          confidence: result.confidence
-        });
-        
-        // Log AI prediction for tracking
-        console.log(`✨ AI Prediction: "${description}" → ${result.predicted_category} (${(result.confidence * 100).toFixed(1)}%)`);
+        if (result.success) {
+          // Automatically set type based on category
+          const isIncome = result.predicted_category.toLowerCase() === 'income';
+          
+          setFormData(prev => ({
+            ...prev,
+            category: result.predicted_category,
+            type: isIncome ? 'income' : 'expense'
+          }));
+          setPredictionConfidence(result.confidence);
+          
+          // Store AI prediction for correction tracking
+          setAiPrediction({
+            category: result.predicted_category,
+            confidence: result.confidence
+          });
+          
+          // Log AI prediction for tracking
+          console.log(`✨ AI Prediction: "${description}" → ${result.predicted_category} (${(result.confidence * 100).toFixed(1)}%)`);
+        }
+      } catch (error) {
+        console.error('AI prediction failed silently - will use manual category selection');
+        setPredictionConfidence(null);
+        setAiPrediction(null);
+      } finally {
+        setPredictingCategory(false);
       }
-    } catch (error) {
-      console.error('AI prediction failed silently - will use manual category selection');
-      setPredictionConfidence(null);
-      setAiPrediction(null);
-    } finally {
-      setPredictingCategory(false);
-    }
-  };
+    };
 
     const handleVoiceTranscript = async (transcript: string) => {
       const cleanedTranscript = transcript.trim();
