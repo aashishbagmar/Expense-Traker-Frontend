@@ -9,12 +9,22 @@
 
 // console.log('🌐 API Base URL:', API_BASE_URL);
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ??
-  (import.meta.env.DEV ? 'http://localhost:9000' : undefined);
+const sanitizeBaseUrl = (value?: string) => {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  const withoutTrailingSlash = trimmed.replace(/\/+$/, '');
+  return withoutTrailingSlash.endsWith('/api')
+    ? withoutTrailingSlash.slice(0, -4)
+    : withoutTrailingSlash;
+};
 
-if (!API_BASE_URL) {
-  throw new Error('❌ API_BASE_URL not configured');
+const API_BASE_URL =
+  sanitizeBaseUrl(import.meta.env.VITE_API_BASE_URL) ??
+  sanitizeBaseUrl(import.meta.env.VITE_BACKEND_URL) ??
+  (import.meta.env.DEV ? 'http://localhost:9000' : 'https://expense-backend-m607.onrender.com');
+
+if (!API_BASE_URL?.startsWith('http')) {
+  throw new Error('❌ API_BASE_URL must be an absolute URL (https://...)');
 }
 
 export default API_BASE_URL;
