@@ -238,22 +238,18 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
       <div className="login-features">
         <div className="feature">
-          <span className="feature-icon">🧾</span>
           <h3>Receipt Scanning</h3>
           <p>Extract transaction data using OCR</p>
         </div>
         <div className="feature">
-          <span className="feature-icon">📊</span>
           <h3>Smart Analytics</h3>
           <p>Visualize spending and trends</p>
         </div>
         <div className="feature">
-          <span className="feature-icon">👥</span>
           <h3>Group Expenses</h3>
           <p>Manage shared finances easily</p>
         </div>
         <div className="feature">
-          <span className="feature-icon">🎯</span>
           <h3>Budget Goals</h3>
           <p>Set and track financial goals</p>
         </div>
